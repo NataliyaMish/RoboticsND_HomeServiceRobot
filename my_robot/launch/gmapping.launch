@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--slam_gmapping-->
+<launch>
+  <arg name="scan_topic" default="/scan" />
+  <arg name="base_frame" default="robot_footprint"/>
+  <arg name="odom_frame" default="odom" />
+
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen" clear_params="true">
+    <param name ="base_frame" value="$(arg base_frame)" />
+    <param name ="odom_frame" value="$(arg odom_frame)" />
+
+    <param name="map_update_interval" value="5.0"/>
+
+    <!-- The maximum usable range of the laser. A beam is cropped to this value  -->
+   <param name="maxUrange" value="4.5"/>
+   
+   <!-- The maximum range of the sensor, set > maxUrange so regions with no obstacles within the range of the sensor should appear as free space in the map -->
+   <param name="maxRange" value="5.0"/> 
+
+    <param name="sigma" value="0.05"/>
+    <param name="kernelSize" value="1"/>
+    <param name="lstep" value="0.05"/>
+    <param name="astep" value="0.05"/>
+    <param name="iterations" value="5"/>
+    <param name="lsigma" value="0.075"/>
+    <param name="ogain" value="3.0"/>
+    <param name="lskip" value="0"/>
+    <param name="srr" value="0.01"/>
+    <param name="srt" value="0.02"/>
+    <param name="str" value="0.01"/>
+    <param name="stt" value="0.02"/>
+    
+    <!-- Scan update rates -->
+    <param name="linearUpdate" value="0.2"/>
+    <param name="angularUpdate" value="0.1"/>
+
+    <param name="temporalUpdate" value="-1.0"/>
+    <param name="resampleThreshold" value="0.5"/>
+
+    <!-- Number of particles in the filter-->
+    <param name="particles" value="80"/>
+
+    <!-- Initial map size -->
+    <param name="xmin" value="-1.0"/>
+    <param name="ymin" value="-1.0"/>
+    <param name="xmax" value="1.0"/>
+    <param name="ymax" value="1.0"/>
+
+    <!-- Resolution of the map -->
+    <param name="delta" value="0.05"/>
+
+    <param name="llsamplerange" value="0.01"/>
+    <param name="llsamplestep" value="0.01"/>
+    <param name="lasamplerange" value="0.005"/>
+    <param name="lasamplestep" value="0.005"/>
+
+    <remap from="scan" to="$(arg scan_topic)"/>
+  </node>
+
+</launch>
