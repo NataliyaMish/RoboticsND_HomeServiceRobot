@@ -1,4 +1,3 @@
-
 #!/bin/sh
 xterm -e " roslaunch my_robot world.launch" &
 sleep 20
