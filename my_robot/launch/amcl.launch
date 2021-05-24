@@ -17,9 +17,9 @@
      <param name="max_particles" value="1000"/>
     
      <!-- Initial pose -->
-     <param name="initial_pose_x" value="0.0"/>
-     <param name="initial_pose_y" value="0.0"/>
-     <param name="initial_pose_a" value="0.0"/>
+     <param name="initial_pose_x" value="1.0"/>
+     <param name="initial_pose_y" value="2.0"/>
+     <param name="initial_pose_a" value="1.5708"/>
 
      <!-- Filter update with scans -->
      <param name="update_min_d" value="0.1"/>
