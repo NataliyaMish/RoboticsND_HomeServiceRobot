@@ -4,17 +4,21 @@
 int main( int argc, char** argv )
 {
   ros::init(argc, argv, "add_markers");
-  ros::NodeHandle n;
+  ros::NodeHandle nh;
   ros::Rate r(1);
-  ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
+  ros::Publisher marker_pub = nh.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 
+  // Initialize variables for ROS parameter values
+  bool pick_up_location_reached(false), drop_off_location_reached(false);
+  
+  // Initialize marker
   visualization_msgs::Marker marker;
 
-    // Set the frame ID and timestamp.  See the TF tutorials for information on these.
-    marker.header.frame_id = "map";
-    marker.header.stamp = ros::Time::now();
+  // Set the frame ID and timestamp.  See the TF tutorials for information on these.
+  marker.header.frame_id = "map";
+  marker.header.stamp = ros::Time::now();
 
-  if (ros::ok())
+  while (ros::ok())
   {    
     // Set the namespace and id for this marker.  This serves to create a unique ID
     marker.ns = "pick_up";
@@ -59,9 +63,16 @@ int main( int argc, char** argv )
     // Pause for 5 seconds
     ros::Duration(5).sleep();
 
-    // Set the marker action and publish it to hide it
-    marker.action = visualization_msgs::Marker::DELETE;
-    marker_pub.publish(marker);
+    // Check whether the robot has reached pick-up location
+    nh.getParam("pick_up_location_reached", pick_up_location_reached);
+    
+    if ( pick_up_location_reached )
+    {
+  	  // Set the marker action and publish it to hide it
+      marker.action = visualization_msgs::Marker::DELETE;
+  	  marker_pub.publish(marker);
+      break;
+    }
    }
 
    // Pause for 5 seconds
@@ -92,10 +103,16 @@ int main( int argc, char** argv )
     marker.pose.position.y = 0.5;
     marker.pose.position.z = 0;
     marker.pose.orientation.w = 0.0;
+     
+    // Check whether the robot has reached pick-up location
+    nh.getParam("drop_off_location_reached", drop_off_location_reached);
     
-    // Set the marker action and publish it to display it at drop-off location
-    marker.action = visualization_msgs::Marker::ADD;
-    marker_pub.publish(marker);
+    if ( drop_off_location_reached )
+    {
+       // Set the marker action and publish it to display it at drop-off location
+       marker.action = visualization_msgs::Marker::ADD;
+       marker_pub.publish(marker);
+    }
 
     r.sleep();
   }

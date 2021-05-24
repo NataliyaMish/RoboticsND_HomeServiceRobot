@@ -9,9 +9,17 @@ int main(int argc, char** argv){
 
   // Initialize the pick_objects node
   ros::init(argc, argv, "pick_objects");
+  
+  // Get node handle
+  ros::NodeHandle nh;
 
   // Tell the action client that we want to spin a thread by default
   MoveBaseClient ac("move_base", true);
+  
+  // Define node parameters that indicate whether the robot reached
+  // pick-up/drop-off locations
+  nh.setParam("pick_up_location_reached" , false);
+  nh.setParam("drop_off_location_reached", false);
 
   // Wait 5 sec for move_base action server to come up
   while(!ac.waitForServer(ros::Duration(5.0)))
@@ -54,8 +62,10 @@ int main(int argc, char** argv){
   ac.waitForResult();
 
   // Check if the robot reached its goal
-  if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+  if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
     ROS_INFO("Hooray, reached pick-up location");
+    nh.setParam("pick_up_location_reached", true);
+  }
   else
     ROS_INFO("Failed to reach pick-up location for some reason");
 
@@ -71,8 +81,10 @@ int main(int argc, char** argv){
   ac.waitForResult();
 
   // Check if the robot reached its goal
-  if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+  if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
     ROS_INFO("Hooray, reached drop-ff location");
+    nh.setParam("drop_off_location_reached", true);
+  }
   else
     ROS_INFO("Failed to reach drop-off location for some reason");
 
